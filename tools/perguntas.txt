@@ -1,0 +1,155 @@
+# ==============================================================
+# FORMATO DO ARQUIVO perguntas.txt
+# ==============================================================
+#
+# Cada bloco de pergunta segue este formato (separado por linha em branco):
+#
+# Pergunta: [texto da pergunta]
+# A: [alternativa A]
+# B: [alternativa B]
+# C: [alternativa C]
+# D: [alternativa D]
+# Resposta: [letra correta: A, B, C ou D]
+# Categoria: [nome da categoria]
+#
+# Exemplo:
+# ---------
+# Pergunta: Qual é a capital do Brasil?
+# A: São Paulo
+# B: Rio de Janeiro
+# C: Brasília
+# D: Salvador
+# Resposta: C
+# Categoria: Geografia
+#
+# (linha em branco separa as perguntas)
+#
+# Pergunta: Qual planeta é conhecido como 'Planeta Vermelho'?
+# A: Vênus
+# B: Marte
+# C: Júpiter
+# D: Saturno
+# Resposta: B
+# Categoria: Ciências
+#
+# ==============================================================
+
+Pergunta: Qual é a capital do Brasil?
+A: São Paulo
+B: Rio de Janeiro
+C: Brasília
+D: Salvador
+Resposta: C
+Categoria: Geografia
+
+Pergunta: Qual planeta é conhecido como 'Planeta Vermelho'?
+A: Vênus
+B: Marte
+C: Júpiter
+D: Saturno
+Resposta: B
+Categoria: Ciências
+
+Pergunta: Quem pintou a Mona Lisa?
+A: Michelangelo
+B: Van Gogh
+C: Leonardo da Vinci
+D: Pablo Picasso
+Resposta: C
+Categoria: Arte
+
+Pergunta: Qual é o maior oceano do mundo?
+A: Atlântico
+B: Índico
+C: Ártico
+D: Pacífico
+Resposta: D
+Categoria: Geografia
+
+Pergunta: Em que ano o Brasil foi descoberto?
+A: 1498
+B: 1500
+C: 1502
+D: 1510
+Resposta: B
+Categoria: História
+
+Pergunta: Qual é a fórmula química da água?
+A: CO2
+B: NaCl
+C: H2O
+D: O2
+Resposta: C
+Categoria: Ciências
+
+Pergunta: Qual é o maior país do mundo em área territorial?
+A: China
+B: Estados Unidos
+C: Canadá
+D: Rússia
+Resposta: D
+Categoria: Geografia
+
+Pergunta: Quem escreveu 'Dom Casmurro'?
+A: José de Alencar
+B: Machado de Assis
+C: Clarice Lispector
+D: Jorge Amado
+Resposta: B
+Categoria: Literatura
+
+Pergunta: Qual é o resultado de 7 × 8?
+A: 54
+B: 56
+C: 58
+D: 64
+Resposta: B
+Categoria: Matemática
+
+Pergunta: Qual linguagem de programação é usada para apps Android nativos?
+A: Swift
+B: Python
+C: Kotlin
+D: Ruby
+Resposta: C
+Categoria: Tecnologia
+
+Pergunta: Qual é o menor estado do Brasil?
+A: Alagoas
+B: Sergipe
+C: Rio Grande do Norte
+D: Espírito Santo
+Resposta: B
+Categoria: Geografia
+
+Pergunta: Quantos planetas existem no Sistema Solar?
+A: 7
+B: 8
+C: 9
+D: 10
+Resposta: B
+Categoria: Ciências
+
+Pergunta: Quem foi o primeiro presidente do Brasil?
+A: Getúlio Vargas
+B: Dom Pedro II
+C: Deodoro da Fonseca
+D: Juscelino Kubitschek
+Resposta: C
+Categoria: História
+
+Pergunta: Qual é o animal símbolo do Brasil?
+A: Arara
+B: Onça-pintada
+C: Boto
+D: Lobo-guará
+Resposta: A
+Categoria: Ciências
+
+Pergunta: Em qual continente fica o Egito?
+A: Ásia
+B: Europa
+C: África
+D: Oceania
+Resposta: C
+Categoria: Geografia

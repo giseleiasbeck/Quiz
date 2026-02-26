@@ -1,0 +1,139 @@
+{
+  "quizzes": {
+    "pergunta_1": {
+      "questionText": "Qual é a capital do Brasil?",
+      "optionA": "São Paulo",
+      "optionB": "Rio de Janeiro",
+      "optionC": "Brasília",
+      "optionD": "Salvador",
+      "correctOptionIndex": 2,
+      "category": "Geografia"
+    },
+    "pergunta_2": {
+      "questionText": "Qual planeta é conhecido como 'Planeta Vermelho'?",
+      "optionA": "Vênus",
+      "optionB": "Marte",
+      "optionC": "Júpiter",
+      "optionD": "Saturno",
+      "correctOptionIndex": 1,
+      "category": "Ciências"
+    },
+    "pergunta_3": {
+      "questionText": "Quem pintou a Mona Lisa?",
+      "optionA": "Michelangelo",
+      "optionB": "Van Gogh",
+      "optionC": "Leonardo da Vinci",
+      "optionD": "Pablo Picasso",
+      "correctOptionIndex": 2,
+      "category": "Arte"
+    },
+    "pergunta_4": {
+      "questionText": "Qual é o maior oceano do mundo?",
+      "optionA": "Atlântico",
+      "optionB": "Índico",
+      "optionC": "Ártico",
+      "optionD": "Pacífico",
+      "correctOptionIndex": 3,
+      "category": "Geografia"
+    },
+    "pergunta_5": {
+      "questionText": "Em que ano o Brasil foi descoberto?",
+      "optionA": "1498",
+      "optionB": "1500",
+      "optionC": "1502",
+      "optionD": "1510",
+      "correctOptionIndex": 1,
+      "category": "História"
+    },
+    "pergunta_6": {
+      "questionText": "Qual é a fórmula química da água?",
+      "optionA": "CO2",
+      "optionB": "NaCl",
+      "optionC": "H2O",
+      "optionD": "O2",
+      "correctOptionIndex": 2,
+      "category": "Ciências"
+    },
+    "pergunta_7": {
+      "questionText": "Qual é o maior país do mundo em área territorial?",
+      "optionA": "China",
+      "optionB": "Estados Unidos",
+      "optionC": "Canadá",
+      "optionD": "Rússia",
+      "correctOptionIndex": 3,
+      "category": "Geografia"
+    },
+    "pergunta_8": {
+      "questionText": "Quem escreveu 'Dom Casmurro'?",
+      "optionA": "José de Alencar",
+      "optionB": "Machado de Assis",
+      "optionC": "Clarice Lispector",
+      "optionD": "Jorge Amado",
+      "correctOptionIndex": 1,
+      "category": "Literatura"
+    },
+    "pergunta_9": {
+      "questionText": "Qual é o resultado de 7 × 8?",
+      "optionA": "54",
+      "optionB": "56",
+      "optionC": "58",
+      "optionD": "64",
+      "correctOptionIndex": 1,
+      "category": "Matemática"
+    },
+    "pergunta_10": {
+      "questionText": "Qual linguagem de programação é usada para apps Android nativos?",
+      "optionA": "Swift",
+      "optionB": "Python",
+      "optionC": "Kotlin",
+      "optionD": "Ruby",
+      "correctOptionIndex": 2,
+      "category": "Tecnologia"
+    },
+    "pergunta_11": {
+      "questionText": "Qual é o menor estado do Brasil?",
+      "optionA": "Alagoas",
+      "optionB": "Sergipe",
+      "optionC": "Rio Grande do Norte",
+      "optionD": "Espírito Santo",
+      "correctOptionIndex": 1,
+      "category": "Geografia"
+    },
+    "pergunta_12": {
+      "questionText": "Quantos planetas existem no Sistema Solar?",
+      "optionA": "7",
+      "optionB": "8",
+      "optionC": "9",
+      "optionD": "10",
+      "correctOptionIndex": 1,
+      "category": "Ciências"
+    },
+    "pergunta_13": {
+      "questionText": "Quem foi o primeiro presidente do Brasil?",
+      "optionA": "Getúlio Vargas",
+      "optionB": "Dom Pedro II",
+      "optionC": "Deodoro da Fonseca",
+      "optionD": "Juscelino Kubitschek",
+      "correctOptionIndex": 2,
+      "category": "História"
+    },
+    "pergunta_14": {
+      "questionText": "Qual é o animal símbolo do Brasil?",
+      "optionA": "Arara",
+      "optionB": "Onça-pintada",
+      "optionC": "Boto",
+      "optionD": "Lobo-guará",
+      "correctOptionIndex": 0,
+      "category": "Ciências"
+    },
+    "pergunta_15": {
+      "questionText": "Em qual continente fica o Egito?",
+      "optionA": "Ásia",
+      "optionB": "Europa",
+      "optionC": "África",
+      "optionD": "Oceania",
+      "correctOptionIndex": 2,
+      "category": "Geografia"
+    }
+  }
+}

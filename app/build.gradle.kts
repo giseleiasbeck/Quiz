@@ -85,6 +85,7 @@ dependencies {
     implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
+    implementation("com.google.firebase:firebase-database") // Realtime Database
 
     // Coroutines Play Services (Para converter callbacks do Firebase em suspend functions)
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.3")
