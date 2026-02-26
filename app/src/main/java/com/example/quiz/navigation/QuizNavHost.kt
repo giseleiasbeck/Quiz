@@ -18,33 +18,18 @@ import com.example.quiz.ui.feature.quiz.QuizViewModel
 import com.example.quiz.ui.feature.singup.SignupScreen
 import kotlinx.serialization.Serializable
 
-// =============================================================
-// ROTAS — Cada objeto/classe é uma "tela" do app.
-//
-// Fluxo completo:
-//   Login ←→ Signup (Cadastro)
-//     ↓
-//   Home (dashboard) → Quiz → Resultado
-//        ↓
-//      Histórico
-// =============================================================
-
 @Serializable
 object LoginRoute
 
-/** Rota de Cadastro — implementada pelo colega */
 @Serializable
 object SignupRoute
 
-/** Tela Home/Dashboard — HUB central do app */
 @Serializable
 object HomeRoute
 
-/** Tela do Quiz — onde o usuário responde as perguntas */
 @Serializable
 object QuizRoute
 
-/** Tela de Resultado — mostra desempenho ao final do quiz */
 @Serializable
 data class QuizResultRoute(
     val totalQuestions: Int,
@@ -53,13 +38,8 @@ data class QuizResultRoute(
     val totalTimeSeconds: Long
 )
 
-/** Tela de Histórico — lista todos os quizzes feitos */
 @Serializable
 object HistoryRoute
-
-// =============================================================
-// NAVIGATION HOST
-// =============================================================
 
 @Composable
 fun AppNavigation() {
@@ -68,24 +48,20 @@ fun AppNavigation() {
 
     NavHost(navController = navController, startDestination = LoginRoute) {
 
-        // --- LOGIN ---
         composable<LoginRoute> {
             LoginScreen(
                 viewModel = authViewModel,
                 navigateToHome = {
-                    // Após login bem-sucedido → vai para o Home (Dashboard)
                     navController.navigate(HomeRoute) {
                         popUpTo(LoginRoute) { inclusive = true }
                     }
                 },
                 navigateToSignup = {
-                    // Navega para a tela de Cadastro (implementada pelo colega)
                     navController.navigate(SignupRoute)
                 }
             )
         }
 
-        // --- CADASTRO (implementado pelo colega) ---
         composable<SignupRoute> {
             SignupScreen(
                 viewModel = authViewModel,
@@ -100,7 +76,6 @@ fun AppNavigation() {
             )
         }
 
-        // --- HOME (Dashboard) ---
         composable<HomeRoute> {
             val homeViewModel: HomeViewModel = hiltViewModel()
 
@@ -121,7 +96,6 @@ fun AppNavigation() {
             )
         }
 
-        // --- QUIZ (execução das perguntas) ---
         composable<QuizRoute> {
             val quizViewModel: QuizViewModel = hiltViewModel()
 
@@ -142,7 +116,6 @@ fun AppNavigation() {
             )
         }
 
-        // --- RESULTADO DO QUIZ ---
         composable<QuizResultRoute> { backStackEntry ->
             val route = backStackEntry.toRoute<QuizResultRoute>()
 
@@ -164,7 +137,6 @@ fun AppNavigation() {
             )
         }
 
-        // --- HISTÓRICO ---
         composable<HistoryRoute> {
             val historyViewModel: HistoryViewModel = hiltViewModel()
 

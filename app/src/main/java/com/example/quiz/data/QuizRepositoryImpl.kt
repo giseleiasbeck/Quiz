@@ -9,18 +9,6 @@ import com.example.quiz.data.remote.QuestionFirebaseSource
 import com.example.quiz.data.remote.ResultFirebaseSource
 import javax.inject.Inject
 
-/**
- * Implementação do QuizRepository com estratégia OFFLINE-FIRST.
- *
- * Agora salva resultados em DOIS lugares:
- * 1. Room (local) → sempre salva → funciona offline
- * 2. Firebase (nuvem) → tenta salvar → falha silenciosamente se offline
- *
- * Isso garante que:
- * - O histórico local está sempre atualizado (Room)
- * - O histórico na nuvem sincroniza quando há internet (Firebase)
- * - O trabalho pede: "desempenho salvo localmente E na nuvem junto ao perfil"
- */
 class QuizRepositoryImpl @Inject constructor(
     private val questionDao: QuestionDao,
     private val quizResultDao: QuizResultDao,
@@ -36,22 +24,10 @@ class QuizRepositoryImpl @Inject constructor(
         return questionDao.getRandomQuestions(count)
     }
 
-    /**
-     * Salva o resultado em DOIS lugares (local + nuvem).
-     *
-     * 1. Primeiro salva no Room (sempre funciona) → pega o ID gerado
-     * 2. Depois TENTA salvar no Firebase (pode falhar se offline)
-     *    - Se falhar, o resultado ainda está seguro no Room
-     *    - Log de warning para debugging
-     *
-     * O retorno é o ID do Room (o que importa é o local estar salvo).
-     */
     override suspend fun saveQuizResult(result: QuizResult): Long {
-        // 1. Salva localmente (Room) — sempre funciona
         val localId = quizResultDao.insert(result)
         Log.d(TAG, "Resultado salvo localmente (Room ID: $localId)")
 
-        // 2. Tenta salvar na nuvem (Firebase) — pode falhar
         try {
             val cloudResult = resultFirebaseSource.saveResult(
                 totalQuestions = result.totalQuestions,
@@ -95,9 +71,6 @@ class QuizRepositoryImpl @Inject constructor(
         return questionDao.getDistinctCategories()
     }
 
-    /**
-     * Sincroniza perguntas: Firebase → Room.
-     */
     override suspend fun syncQuestions(): Boolean {
         val firebaseResult = firebaseSource.fetchAllQuestions()
 
@@ -121,7 +94,7 @@ class QuizRepositoryImpl @Inject constructor(
             return false
         }
 
-        Log.d(TAG, "Sem internet e sem cache → usando perguntas de fallback")
+        Log.d(TAG, "Sem internet e sem cache -> usando perguntas de fallback")
         populateFallbackQuestions()
         return false
     }

@@ -15,11 +15,11 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Timer
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -47,17 +47,6 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-/**
- * Tela de Histórico/Estatísticas.
- *
- * Exibe:
- * 1. Cards de estatísticas globais (total, média, melhor nota)
- * 2. Lista de todos os quizzes feitos com detalhes de cada um
- *
- * Requisito do trabalho:
- * "O usuário deve poder acessar o histórico de quizzes respondidos
- *  e visualizar estatísticas (quantidade de quizzes feitos, acertos, etc.)"
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoryScreen(
@@ -100,7 +89,6 @@ fun HistoryScreen(
                 CircularProgressIndicator()
             }
         } else if (uiState.results.isEmpty()) {
-            // Estado vazio - sem histórico
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -123,7 +111,6 @@ fun HistoryScreen(
                 )
             }
         } else {
-            // Lista de resultados
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -131,7 +118,6 @@ fun HistoryScreen(
                     .padding(horizontal = 20.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                // ===== HEADER: Estatísticas Globais =====
                 item {
                     Spacer(modifier = Modifier.height(8.dp))
 
@@ -181,7 +167,6 @@ fun HistoryScreen(
                     Spacer(modifier = Modifier.height(4.dp))
                 }
 
-                // ===== LISTA DOS RESULTADOS =====
                 itemsIndexed(uiState.results) { index, result ->
                     ResultCard(
                         result = result,
@@ -197,26 +182,20 @@ fun HistoryScreen(
     }
 }
 
-/**
- * Card individual de resultado — mostra detalhes de UM quiz.
- */
 @Composable
 private fun ResultCard(
     result: QuizResult,
     position: Int
 ) {
-    // Cor baseada no desempenho
     val scoreColor = when {
-        result.scorePercentage >= 70 -> Color(0xFF4CAF50) // Verde
-        result.scorePercentage >= 50 -> Color(0xFFFFC107) // Amarelo
-        else -> Color(0xFFF44336) // Vermelho
+        result.scorePercentage >= 70 -> Color(0xFF4CAF50)
+        result.scorePercentage >= 50 -> Color(0xFFFFC107)
+        else -> Color(0xFFF44336)
     }
 
-    // Formata a data
     val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale("pt", "BR"))
     val dateStr = dateFormat.format(Date(result.dateTimestamp))
 
-    // Formata o tempo
     val timeStr = if (result.totalTimeSeconds >= 60) {
         "${result.totalTimeSeconds / 60}min ${result.totalTimeSeconds % 60}s"
     } else {
@@ -237,7 +216,6 @@ private fun ResultCard(
                 .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Número do quiz
             Text(
                 text = "#$position",
                 style = MaterialTheme.typography.titleMedium,
@@ -247,7 +225,6 @@ private fun ResultCard(
 
             Spacer(modifier = Modifier.width(16.dp))
 
-            // Detalhes
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = dateStr,
@@ -284,7 +261,6 @@ private fun ResultCard(
                 }
             }
 
-            // Pontuação grande
             Text(
                 text = "${result.scorePercentage.toInt()}%",
                 fontSize = 28.sp,

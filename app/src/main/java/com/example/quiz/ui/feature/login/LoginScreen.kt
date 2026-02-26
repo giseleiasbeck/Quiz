@@ -33,7 +33,6 @@ fun LoginScreen(
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    // 1. ESTADO PARA CONTROLAR A VISIBILIDADE
     var passwordVisible by remember { mutableStateOf(false) }
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -98,31 +97,22 @@ fun LoginScreen(
                 onValueChange = { password = it },
                 label = { Text("Senha") },
                 singleLine = true,
-                // 2. LÓGICA DO OLHINHO:
-                /* GEMINI PRO - START
-                Prompt:
-                I'm trying to create the login function in my repository using Firebase, but it uses a callback.
-                The problem is that this leaves the code 'stuck' inside, and I wanted my function to suspend so I could call it directly in my ViewModel in an asynchronous and clean way. I read that it's possible to 'convert' these callbacks into coroutines, but I don't know how to do that safely.
-                Transform this Firebase signInWithEmailAndPassword method into a function that I can await or something similar, and that returns a Result<Boolean>? Oh, and if the login fails, I need the Firebase exception to come inside this Result so I know what happened.*/
                 visualTransformation = if (passwordVisible)
                     VisualTransformation.None
                 else PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                // 3. ÍCONE DE CLICAR:
                 trailingIcon = {
                     val image = if (passwordVisible)
                         Icons.Filled.Visibility
                     else
                         Icons.Filled.VisibilityOff
 
-                    //Description for accessibility (screen readers)
                     val description = if (passwordVisible) "Esconder senha" else "Mostrar senha"
 
                     IconButton(onClick = { passwordVisible = !passwordVisible }) {
                         Icon(imageVector = image, contentDescription = description)
                     }
                 }
-                /* GEMINI PRO - END */
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -152,6 +142,4 @@ fun LoginScreen(
             }
         }
     }
-
-
 }

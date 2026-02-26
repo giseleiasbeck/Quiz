@@ -42,9 +42,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/**
- * Tela principal do Quiz — agora com TIMER!
- */
 @Composable
 fun QuizScreen(
     viewModel: QuizViewModel,
@@ -119,20 +116,17 @@ private fun QuizPlayingContent(
     onOptionSelected: (Int) -> Unit,
     onNextClicked: () -> Unit
 ) {
-    // Cor do timer muda conforme o tempo restante
     val timerColor = when {
-        state.remainingSeconds <= 10 -> Color(0xFFF44336) // Vermelho (urgente!)
-        state.remainingSeconds <= 20 -> Color(0xFFFFC107) // Amarelo (atenção)
-        else -> MaterialTheme.colorScheme.primary          // Normal
+        state.remainingSeconds <= 10 -> Color(0xFFF44336)
+        state.remainingSeconds <= 20 -> Color(0xFFFFC107)
+        else -> MaterialTheme.colorScheme.primary
     }
 
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // ===== CABEÇALHO: Progresso + Timer =====
         Column {
-            // Linha: "Pergunta X de Y" + Timer + Categoria
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -144,7 +138,6 @@ private fun QuizPlayingContent(
                     fontWeight = FontWeight.Bold
                 )
 
-                // ===== TIMER (NOVO!) =====
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
                         imageVector = Icons.Filled.Timer,
@@ -164,7 +157,6 @@ private fun QuizPlayingContent(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Chip com a categoria
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -181,7 +173,6 @@ private fun QuizPlayingContent(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Barra de progresso das perguntas
             LinearProgressIndicator(
                 progress = { (state.currentIndex + 1).toFloat() / state.totalQuestions },
                 modifier = Modifier
@@ -192,7 +183,6 @@ private fun QuizPlayingContent(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            // Barra de progresso do TIMER
             LinearProgressIndicator(
                 progress = { state.remainingSeconds.toFloat() / QuizViewModel.QUIZ_TIME_SECONDS },
                 modifier = Modifier
@@ -211,7 +201,6 @@ private fun QuizPlayingContent(
             )
         }
 
-        // ===== CORPO: Pergunta e Alternativas =====
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.Center
@@ -253,7 +242,6 @@ private fun QuizPlayingContent(
             }
         }
 
-        // ===== RODAPÉ: Botão "Próxima" =====
         if (state.isAnswered) {
             Button(
                 onClick = onNextClicked,
@@ -279,18 +267,12 @@ private fun QuizPlayingContent(
     }
 }
 
-/**
- * Formata segundos em "M:SS" (ex: 45 → "0:45", 120 → "2:00").
- */
 private fun formatTime(seconds: Int): String {
     val min = seconds / 60
     val sec = seconds % 60
     return "$min:${sec.toString().padStart(2, '0')}"
 }
 
-/**
- * Botão de alternativa com feedback visual animado.
- */
 @Composable
 private fun OptionButton(
     label: String,

@@ -17,12 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.History
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.QuestionMark
 import androidx.compose.material.icons.filled.Star
-import androidx.compose.material.icons.automirrored.filled.TrendingUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -48,18 +48,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-/**
- * Tela Home — Dashboard principal do app.
- *
- * Exibe:
- * 1. Barra superior com título e botão de logout
- * 2. Cards com estatísticas do usuário (quizzes feitos, média, melhor nota)
- * 3. Categorias disponíveis (chips horizontais)
- * 4. Botão grande "Iniciar Quiz"
- * 5. Botão de "Histórico"
- *
- * Essa tela é o HUB central — de onde o usuário acessa tudo.
- */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
@@ -95,7 +83,6 @@ fun HomeScreen(
         }
     ) { paddingValues ->
         if (uiState.isLoading) {
-            // Loading state
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -108,7 +95,6 @@ fun HomeScreen(
                 Text("Sincronizando perguntas...")
             }
         } else {
-            // Conteúdo principal
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -119,7 +105,6 @@ fun HomeScreen(
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
 
-                // ===== BOAS-VINDAS =====
                 Text(
                     text = "Bem-vindo ao Quiz!",
                     style = MaterialTheme.typography.headlineMedium,
@@ -133,7 +118,6 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // ===== CARDS DE ESTATÍSTICAS =====
                 if (uiState.totalQuizzes > 0) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -165,7 +149,6 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                // ===== INFO DO BANCO =====
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
@@ -205,7 +188,6 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(20.dp))
 
-                // ===== CATEGORIAS =====
                 if (uiState.categories.isNotEmpty()) {
                     Text(
                         text = "Categorias",
@@ -221,7 +203,7 @@ fun HomeScreen(
                         items(uiState.categories) { category ->
                             FilterChip(
                                 selected = false,
-                                onClick = { /* Futuro: filtrar por categoria */ },
+                                onClick = { },
                                 label = { Text(category) }
                             )
                         }
@@ -230,7 +212,6 @@ fun HomeScreen(
                     Spacer(modifier = Modifier.height(24.dp))
                 }
 
-                // ===== BOTÃO INICIAR QUIZ =====
                 Button(
                     onClick = onStartQuiz,
                     modifier = Modifier
@@ -254,7 +235,6 @@ fun HomeScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // ===== BOTÃO HISTÓRICO =====
                 if (uiState.totalQuizzes > 0) {
                     androidx.compose.material3.OutlinedButton(
                         onClick = onViewHistory,
@@ -279,9 +259,6 @@ fun HomeScreen(
     }
 }
 
-/**
- * Card de estatística do dashboard (ex: "Quizzes: 5").
- */
 @Composable
 private fun DashboardCard(
     modifier: Modifier = Modifier,

@@ -12,7 +12,6 @@ import kotlin.onFailure
 import kotlin.onSuccess
 import kotlin.text.isEmpty
 
-// Estados de Autenticação
 sealed class AuthState {
     object Authenticated : AuthState()
     object Unauthenticated : AuthState()
@@ -74,20 +73,8 @@ class AuthViewModel @Inject constructor(
         }
     }
 
-
-    /* GEMINI PRO - START
-     Prompt:
-     I'm using Hilt and LiveData in my AuthViewModel to manage my app's login. I created a sealed class AuthState with the states Authenticated, Unauthenticated, Loading, and Error.
-     I already have the login and registration methods working, but I have a question about logout:
-     I already have a repository.logout() that calls Firebase, but I noticed that when I click the logout button, the screen doesn't change! I stay on the main screen, and the app only realizes that I've logged out if I close and reopen it.
-     How do I make the signout() method of my ViewModel notify the UI that the user is no longer authenticated right after calling the repository? Also, can you show me how to structure this ViewModel by injecting the repository using Hilt and handling these states?
-     .*/
     fun signout() {
         repository.logout()
-        // REQUIRED: Notify the UI that we are now logged out.
-        // Without this, the LoginScreen thinks we are still logged in and redirects.
         _authState.value = AuthState.Unauthenticated
     }
-
-    /* GEMINI PRO - END */
 }

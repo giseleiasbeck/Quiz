@@ -11,10 +11,6 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-/**
- * Estado da tela de histórico.
- * Contém a lista de resultados e estatísticas globais.
- */
 data class HistoryUiState(
     val isLoading: Boolean = true,
     val results: List<QuizResult> = emptyList(),
@@ -23,10 +19,6 @@ data class HistoryUiState(
     val bestScore: Double = 0.0
 )
 
-/**
- * ViewModel do Histórico.
- * Carrega todos os resultados do Room + estatísticas.
- */
 @HiltViewModel
 class HistoryViewModel @Inject constructor(
     private val repository: QuizRepository

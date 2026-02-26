@@ -20,21 +20,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
-/**
- * Módulo do Hilt (Injeção de Dependências).
- *
- * Esse é o "cardápio" que ensina o Hilt a criar as dependências.
- * Combina:
- * - Autenticação (Firebase Auth + Firestore + Room UserDao) — do colega
- * - Quiz (Firebase RTDB + Room QuizDatabase) — nosso código
- */
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-    // ============================================================
-    // FIREBASE (Auth + Firestore)
-    // ============================================================
 
     @Provides
     @Singleton
@@ -42,25 +30,19 @@ object AppModule {
         return FirebaseAuth.getInstance()
     }
 
-    /** Firestore para perfis de usuário — adicionado pelo colega */
     @Provides
     @Singleton
     fun provideFirebaseFirestore(): FirebaseFirestore {
         return FirebaseFirestore.getInstance()
     }
 
-    // ============================================================
-    // ROOM: AppDatabase (perfil do usuário — do colega)
-    // ============================================================
-
-    /** Banco de dados do usuário (UserEntity) — adicionado pelo colega */
     @Provides
     @Singleton
     fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
         return Room.databaseBuilder(
             context,
             AppDatabase::class.java,
-            "app_database"  // Nome diferente do quiz_database para não conflitar!
+            "app_database"
         ).fallbackToDestructiveMigration().build()
     }
 
@@ -69,10 +51,6 @@ object AppModule {
     fun provideUserDao(appDatabase: AppDatabase): UserDao {
         return appDatabase.userDao()
     }
-
-    // ============================================================
-    // AUTH REPOSITORY (atualizado pelo colega: Auth + Firestore + UserDao)
-    // ============================================================
 
     @Provides
     @Singleton
@@ -84,13 +62,6 @@ object AppModule {
         return AuthRepositoryImpl(auth, firestore, userDao)
     }
 
-    // ============================================================
-    // ROOM: QuizDatabase (perguntas + resultados — nosso código)
-    // ============================================================
-
-    /**
-     * Cria a instância do banco de dados Room para o Quiz.
-     */
     @Provides
     @Singleton
     fun provideQuizDatabase(
@@ -114,10 +85,6 @@ object AppModule {
     fun provideQuizResultDao(database: QuizDatabase): QuizResultDao {
         return database.quizResultDao()
     }
-
-    // ============================================================
-    // QUIZ REPOSITORY (Firebase RTDB para perguntas E resultados)
-    // ============================================================
 
     @Provides
     @Singleton
