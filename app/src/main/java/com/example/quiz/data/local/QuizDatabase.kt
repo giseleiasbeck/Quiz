@@ -8,11 +8,12 @@ import com.example.quiz.data.local.entity.Question
 import com.example.quiz.data.local.entity.QuizResult
 
 @Database(
-    entities = [Question::class, QuizResult::class],
-    version = 1,
+    entities = [Question::class, QuizResult::class, UserEntity::class],
+    version = 2,
     exportSchema = false
 )
 abstract class QuizDatabase : RoomDatabase() {
     abstract fun questionDao(): QuestionDao
     abstract fun quizResultDao(): QuizResultDao
+    abstract fun userDao(): UserDao
 }

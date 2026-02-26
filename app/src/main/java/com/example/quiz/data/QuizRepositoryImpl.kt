@@ -105,13 +105,14 @@ class QuizRepositoryImpl @Inject constructor(
 
     override suspend fun syncQuestions(): Boolean {
         val firebaseResult = firebaseSource.fetchAllQuestions()
+        var isSuccessfullySynced = false
 
         firebaseResult.onSuccess { firebaseQuestions ->
             if (firebaseQuestions.isNotEmpty()) {
                 Log.d(TAG, "Firebase: ${firebaseQuestions.size} perguntas baixadas")
                 questionDao.deleteAll()
                 questionDao.insertAll(firebaseQuestions)
-                return true
+                isSuccessfullySynced = true // Apenas marca a variável
             } else {
                 Log.d(TAG, "Firebase: nó 'quizzes' vazio ou inexistente")
             }
@@ -121,11 +122,17 @@ class QuizRepositoryImpl @Inject constructor(
             Log.w(TAG, "Firebase falhou: ${error.message}")
         }
 
-        if (questionDao.getCount() > 0) {
-            Log.d(TAG, "Usando ${questionDao.getCount()} perguntas do cache local")
+        // Se sincronizou com sucesso, encerra aqui e retorna true
+        if (isSuccessfullySynced) return true
+
+        // Se chegou aqui, a sincronização falhou. Verificamos o cache.
+        val localCount = questionDao.getCount()
+        if (localCount > 0) {
+            Log.d(TAG, "Usando $localCount perguntas do cache local")
             return false
         }
 
+        // Se não tem nada no banco, usa o fallback
         Log.d(TAG, "Sem internet e sem cache -> usando perguntas de fallback")
         populateFallbackQuestions()
         return false

@@ -27,7 +27,7 @@ class QuestionFirebaseSource @Inject constructor() {
 
     private fun QuestionFirebase.toLocalQuestion(): Question {
         return Question(
-            id = 0,
+            id = 0, // O Room autogera o ID
             questionText = this.questionText,
             optionA = this.optionA,
             optionB = this.optionB,
