@@ -95,8 +95,18 @@ object AppModule {
         questionDao: QuestionDao,
         quizResultDao: QuizResultDao,
         firebaseSource: com.example.quiz.data.remote.QuestionFirebaseSource,
-        resultFirebaseSource: com.example.quiz.data.remote.ResultFirebaseSource
+        resultFirebaseSource: com.example.quiz.data.remote.ResultFirebaseSource,
+        auth: FirebaseAuth,
+        firestore: FirebaseFirestore,
+        userDao: UserDao
     ): QuizRepository {
-        return QuizRepositoryImpl(questionDao, quizResultDao, firebaseSource, resultFirebaseSource)
+        return QuizRepositoryImpl(
+            questionDao,
+            quizResultDao,
+            firebaseSource,
+            resultFirebaseSource,
+            auth,
+            firestore,
+            userDao)
     }
 }

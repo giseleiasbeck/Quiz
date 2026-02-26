@@ -1,19 +1,27 @@
 package com.example.quiz.data
 
 import android.util.Log
+import com.example.quiz.data.local.UserDao
 import com.example.quiz.data.local.dao.QuestionDao
 import com.example.quiz.data.local.dao.QuizResultDao
 import com.example.quiz.data.local.entity.Question
 import com.example.quiz.data.local.entity.QuizResult
 import com.example.quiz.data.remote.QuestionFirebaseSource
 import com.example.quiz.data.remote.ResultFirebaseSource
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class QuizRepositoryImpl @Inject constructor(
     private val questionDao: QuestionDao,
     private val quizResultDao: QuizResultDao,
     private val firebaseSource: QuestionFirebaseSource,
-    private val resultFirebaseSource: ResultFirebaseSource
+    private val resultFirebaseSource: ResultFirebaseSource,
+    private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore,
+    private val userDao: UserDao
 ) : QuizRepository {
 
     companion object {
@@ -25,9 +33,11 @@ class QuizRepositoryImpl @Inject constructor(
     }
 
     override suspend fun saveQuizResult(result: QuizResult): Long {
+        // 1. Salva o resultado individual no Room
         val localId = quizResultDao.insert(result)
         Log.d(TAG, "Resultado salvo localmente (Room ID: $localId)")
 
+        // 2. Salva o resultado individual no Firebase
         try {
             val cloudResult = resultFirebaseSource.saveResult(
                 totalQuestions = result.totalQuestions,
@@ -42,6 +52,28 @@ class QuizRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             Log.w(TAG, "Erro ao salvar na nuvem: ${e.message}")
+        }
+
+        // 3. Atualiza a pontuação total do perfil do usuário
+        try {
+            val userId = auth.currentUser?.uid
+            if (userId != null) {
+                firestore.collection("users")
+                    .document(userId)
+                    .update(
+                        "pontuacaoTotal",
+                        FieldValue.increment(result.correctAnswers.toLong())
+                    )
+                    .await()
+                Log.d(TAG, "Pontuação atualizada no Firestore (+${result.correctAnswers})")
+
+                userDao.incrementScore(userId, result.correctAnswers)
+                Log.d(TAG, "Pontuação atualizada no Room (+${result.correctAnswers})")
+            } else {
+                Log.w(TAG, "Usuário não logado — pontuação do perfil não atualizada")
+            }
+        } catch (e: Exception) {
+            Log.w(TAG, "Falha ao atualizar pontuação do perfil: ${e.message}")
         }
 
         return localId

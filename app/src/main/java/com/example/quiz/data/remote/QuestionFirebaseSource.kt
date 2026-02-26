@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class QuestionFirebaseSource @Inject constructor() {
 
-    private val database = FirebaseDatabase.getInstance("https://quiz-app-d7112-default-rtdb.firebaseio.com")
+    private val database = FirebaseDatabase.getInstance("https://quiz-app-19342-default-rtdb.firebaseio.com")
     private val questionsRef = database.getReference("quizzes")
 
     suspend fun fetchAllQuestions(): Result<List<Question>> {

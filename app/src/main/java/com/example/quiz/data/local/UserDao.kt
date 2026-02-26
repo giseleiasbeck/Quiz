@@ -14,4 +14,7 @@ interface UserDao {
 
     @Query("DELETE FROM users")
     suspend fun clearUsers()
+
+    @Query("UPDATE users SET pontuacaoTotal = pontuacaoTotal + :points WHERE uid = :uid")
+    suspend fun incrementScore(uid: String, points: Int)
 }
