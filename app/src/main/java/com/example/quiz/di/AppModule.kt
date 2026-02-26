@@ -6,10 +6,13 @@ import com.example.quiz.data.AuthRepository
 import com.example.quiz.data.AuthRepositoryImpl
 import com.example.quiz.data.QuizRepository
 import com.example.quiz.data.QuizRepositoryImpl
+import com.example.quiz.data.local.AppDatabase
 import com.example.quiz.data.local.QuizDatabase
+import com.example.quiz.data.local.UserDao
 import com.example.quiz.data.local.dao.QuestionDao
 import com.example.quiz.data.local.dao.QuizResultDao
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -21,19 +24,16 @@ import javax.inject.Singleton
  * Módulo do Hilt (Injeção de Dependências).
  *
  * Esse é o "cardápio" que ensina o Hilt a criar as dependências.
- * Quando alguma classe pede um QuizRepository, por exemplo,
- * o Hilt olha aqui e sabe como criá-lo.
- *
- * @Module → marca como módulo Hilt
- * @InstallIn(SingletonComponent) → as instâncias vivem durante toda a vida do app
- * @Singleton → cria apenas UMA instância (não recria a cada uso)
+ * Combina:
+ * - Autenticação (Firebase Auth + Firestore + Room UserDao) — do colega
+ * - Quiz (Firebase RTDB + Room QuizDatabase) — nosso código
  */
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
     // ============================================================
-    // FIREBASE AUTH (já existia)
+    // FIREBASE (Auth + Firestore)
     // ============================================================
 
     @Provides
@@ -42,27 +42,54 @@ object AppModule {
         return FirebaseAuth.getInstance()
     }
 
+    /** Firestore para perfis de usuário — adicionado pelo colega */
     @Provides
     @Singleton
-    fun provideAuthRepository(
-        auth: FirebaseAuth
-    ): AuthRepository {
-        return AuthRepositoryImpl(auth)
+    fun provideFirebaseFirestore(): FirebaseFirestore {
+        return FirebaseFirestore.getInstance()
     }
 
     // ============================================================
-    // ROOM DATABASE (novo)
+    // ROOM: AppDatabase (perfil do usuário — do colega)
+    // ============================================================
+
+    /** Banco de dados do usuário (UserEntity) — adicionado pelo colega */
+    @Provides
+    @Singleton
+    fun provideAppDatabase(@ApplicationContext context: Context): AppDatabase {
+        return Room.databaseBuilder(
+            context,
+            AppDatabase::class.java,
+            "app_database"  // Nome diferente do quiz_database para não conflitar!
+        ).fallbackToDestructiveMigration().build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserDao(appDatabase: AppDatabase): UserDao {
+        return appDatabase.userDao()
+    }
+
+    // ============================================================
+    // AUTH REPOSITORY (atualizado pelo colega: Auth + Firestore + UserDao)
+    // ============================================================
+
+    @Provides
+    @Singleton
+    fun provideAuthRepository(
+        auth: FirebaseAuth,
+        firestore: FirebaseFirestore,
+        userDao: UserDao
+    ): AuthRepository {
+        return AuthRepositoryImpl(auth, firestore, userDao)
+    }
+
+    // ============================================================
+    // ROOM: QuizDatabase (perguntas + resultados — nosso código)
     // ============================================================
 
     /**
-     * Cria a instância do banco de dados Room.
-     *
-     * - @ApplicationContext context → o Hilt fornece o contexto do app
-     * - Room.databaseBuilder() → cria o banco com o nome "quiz_database"
-     * - .fallbackToDestructiveMigration() → se mudarmos a versão do schema,
-     *   o Room apaga e recria o banco em vez de crashar.
-     *   ⚠️ Em produção, usaríamos Migrations para preservar os dados.
-     *   Para desenvolvimento, destructive é mais prático.
+     * Cria a instância do banco de dados Room para o Quiz.
      */
     @Provides
     @Singleton
@@ -76,30 +103,22 @@ object AppModule {
         ).fallbackToDestructiveMigration().build()
     }
 
-    /**
-     * Extrai o QuestionDao do banco.
-     * Assim o Hilt sabe injetar o DAO diretamente onde for preciso.
-     */
     @Provides
     @Singleton
     fun provideQuestionDao(database: QuizDatabase): QuestionDao {
         return database.questionDao()
     }
 
-    /**
-     * Extrai o QuizResultDao do banco.
-     */
     @Provides
     @Singleton
     fun provideQuizResultDao(database: QuizDatabase): QuizResultDao {
         return database.quizResultDao()
     }
 
-    /**
-     * Ensina o Hilt: quando alguém pedir QuizRepository (interface),
-     * entregue um QuizRepositoryImpl (implementação real).
-     * Inclui fontes do Firebase para perguntas E resultados.
-     */
+    // ============================================================
+    // QUIZ REPOSITORY (Firebase RTDB para perguntas E resultados)
+    // ============================================================
+
     @Provides
     @Singleton
     fun provideQuizRepository(

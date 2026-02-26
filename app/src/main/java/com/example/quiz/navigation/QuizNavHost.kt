@@ -15,19 +15,26 @@ import com.example.quiz.ui.feature.login.LoginScreen
 import com.example.quiz.ui.feature.quiz.QuizResultScreen
 import com.example.quiz.ui.feature.quiz.QuizScreen
 import com.example.quiz.ui.feature.quiz.QuizViewModel
+import com.example.quiz.ui.feature.singup.SignupScreen
 import kotlinx.serialization.Serializable
 
 // =============================================================
 // ROTAS — Cada objeto/classe é uma "tela" do app.
 //
 // Fluxo completo:
-//   Login → Home (dashboard) → Quiz → Resultado
-//                ↓
-//              Histórico
+//   Login ←→ Signup (Cadastro)
+//     ↓
+//   Home (dashboard) → Quiz → Resultado
+//        ↓
+//      Histórico
 // =============================================================
 
 @Serializable
 object LoginRoute
+
+/** Rota de Cadastro — implementada pelo colega */
+@Serializable
+object SignupRoute
 
 /** Tela Home/Dashboard — HUB central do app */
 @Serializable
@@ -66,12 +73,29 @@ fun AppNavigation() {
             LoginScreen(
                 viewModel = authViewModel,
                 navigateToHome = {
+                    // Após login bem-sucedido → vai para o Home (Dashboard)
                     navController.navigate(HomeRoute) {
                         popUpTo(LoginRoute) { inclusive = true }
                     }
                 },
                 navigateToSignup = {
-                    // TODO: Implementar quando a rota de Cadastro for reativada
+                    // Navega para a tela de Cadastro (implementada pelo colega)
+                    navController.navigate(SignupRoute)
+                }
+            )
+        }
+
+        // --- CADASTRO (implementado pelo colega) ---
+        composable<SignupRoute> {
+            SignupScreen(
+                viewModel = authViewModel,
+                navigateToHome = {
+                    navController.navigate(LoginRoute) {
+                        popUpTo(LoginRoute) { inclusive = true }
+                    }
+                },
+                navigateToLogin = {
+                    navController.popBackStack()
                 }
             )
         }
@@ -128,13 +152,11 @@ fun AppNavigation() {
                 scorePercentage = route.scorePercentage,
                 totalTimeSeconds = route.totalTimeSeconds,
                 onPlayAgain = {
-                    // Novo quiz direto
                     navController.navigate(QuizRoute) {
                         popUpTo(HomeRoute)
                     }
                 },
                 onGoHome = {
-                    // Volta para o Dashboard
                     navController.navigate(HomeRoute) {
                         popUpTo(HomeRoute) { inclusive = true }
                     }

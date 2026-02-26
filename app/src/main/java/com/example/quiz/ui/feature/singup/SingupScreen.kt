@@ -1,4 +1,4 @@
-package com.example.todolist.ui.feature.auth
+package com.example.quiz.ui.feature.singup
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*

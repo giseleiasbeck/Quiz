@@ -1,77 +1,76 @@
 package com.example.quiz.data
 
+import com.example.quiz.data.local.UserDao
+import com.example.quiz.data.local.UserEntity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.coroutines.suspendCancellableCoroutine
+import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
-import kotlin.coroutines.resume
-
-
-/* GEMINI PRO - START 1
- Prompt:
- I'm developing a ToDoList app in Kotlin with Jetpack Compose and I'm using Hilt for dependency injection. I need to create my AuthRepositoryImpl that inherits from an AuthRepository interface.
-The repository needs to use FirebaseAuth to:
-Get the current user.
-Log in.
-Register.
-Log out.
-The detail: I want to use Coroutines (suspend functions) in my ViewModel, but Firebase works with those addOnCompleteListener callbacks. How can I transform these Firebase methods into suspended functions that return a Result<Boolean> so I can handle the error or success later?
-You can use @Inject in the constructor to pass FirebaseAuth for Hilt.*/
 
 class AuthRepositoryImpl @Inject constructor(
-    private val auth: FirebaseAuth
+    private val auth: FirebaseAuth,
+    private val firestore: FirebaseFirestore,
+    private val userDao: UserDao
 ) : AuthRepository {
 
     override val currentUser: FirebaseUser?
         get() = auth.currentUser
 
-
-
-    /* GEMINI PRO - START 2
-     Prompt:
-     I'm trying to create the login function in my repository using Firebase, but it uses a callback.
-     The problem is that this leaves the code 'stuck' inside, and I wanted my function to suspend so I could call it directly in my ViewModel in an asynchronous and clean way. I read that it's possible to 'convert' these callbacks into coroutines, but I don't know how to do that safely.
-     Transform this Firebase signInWithEmailAndPassword method into a function that I can await or something similar, and that returns a Result<Boolean>? Oh, and if the login fails, I need the Firebase exception to come inside this Result so I know what happened.*/
-
     override suspend fun login(email: String, pass: String): Result<Boolean> {
-        return suspendCancellableCoroutine { continuation ->
-            auth.signInWithEmailAndPassword(email, pass)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        continuation.resume(Result.success(true))
-                    } else {
-                        continuation.resume(
-                            Result.failure(
-                                task.exception ?: kotlin.Exception("Erro desconhecido")
-                            )
-                        )
-                    }
-                }
+        return try {
+            // 1. Autentica no Firebase
+            val authResult = auth.signInWithEmailAndPassword(email, pass).await()
+            val user = authResult.user
+
+            if (user != null) {
+                // 2. Tenta recuperar os dados da nuvem para atualizar o telemóvel localmente
+                val document = firestore.collection("users").document(user.uid).get().await()
+                val pontuacao = document.getLong("pontuacaoTotal")?.toInt() ?: 0
+
+                // 3. Guarda localmente para uso offline
+                userDao.insertUser(UserEntity(uid = user.uid, email = email, pontuacaoTotal = pontuacao))
+
+                Result.success(true)
+            } else {
+                Result.failure(Exception("Utilizador não encontrado após login"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
-    /* GEMINI PRO - END  2 */
-
     override suspend fun signup(email: String, pass: String): Result<Boolean> {
-        return suspendCancellableCoroutine { continuation ->
-            auth.createUserWithEmailAndPassword(email, pass)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        continuation.resume(Result.success(true))
-                    } else {
-                        continuation.resume(
-                            Result.failure(
-                                task.exception ?: kotlin.Exception("Erro desconhecido")
-                            )
-                        )
-                    }
-                }
+        return try {
+            // 1. Cria a conta no Firebase Auth
+            val authResult = auth.createUserWithEmailAndPassword(email, pass).await()
+            val user = authResult.user
+
+            if (user != null) {
+                // 2. Prepara o documento para o Firestore
+                val userProfile = hashMapOf(
+                    "uid" to user.uid,
+                    "email" to email,
+                    "pontuacaoTotal" to 0
+                )
+
+                // 3. Salva no Firestore (Nuvem)
+                firestore.collection("users").document(user.uid).set(userProfile).await()
+
+                // 4. Salva no Room (Local)
+                userDao.insertUser(UserEntity(uid = user.uid, email = email, pontuacaoTotal = 0))
+
+                Result.success(true)
+            } else {
+                Result.failure(Exception("Falha ao criar utilizador: Registo nulo"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
         }
     }
 
     override fun logout() {
         auth.signOut()
+        // Opcional: userDao.clearUsers() se quiser limpar os dados locais ao sair
     }
-
-    /* GEMINI PRO - END 1 */
 }
