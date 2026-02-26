@@ -7,7 +7,7 @@ import javax.inject.Inject
 
 class ResultFirebaseSource @Inject constructor() {
 
-    private val database = FirebaseDatabase.getInstance("https://quiz-app-d7112-default-rtdb.firebaseio.com")
+    private val database = FirebaseDatabase.getInstance("https://quiz-app-19342-default-rtdb.firebaseio.com")
     private val resultsRef = database.getReference("results")
     private val auth = FirebaseAuth.getInstance()
 
